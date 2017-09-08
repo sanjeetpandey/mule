@@ -668,7 +668,6 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
         </dependency>
-
         <!-- Unit tests -->
         <dependency>
             <groupId>org.mule.tests</groupId>
@@ -802,6 +801,5 @@
             <version>${activemqVersion}</version>
             <scope>test</scope>
         </dependency>
-
     </dependencies>
 </project>
