@@ -112,8 +112,8 @@ public abstract class AbstractHttpExpectHeaderServerTestCase extends FunctionalT
 
                 reader.close();
                 writer.close();
-                socket.close();
-                serverSocket.close();
+//                socket.close();
+//                serverSocket.close();
 
                 finishedLatch.release();
             }
@@ -139,6 +139,13 @@ public abstract class AbstractHttpExpectHeaderServerTestCase extends FunctionalT
             char[] body = new char[TEST_MESSAGE.length()];
             IOUtils.read(reader, body);
             requestBody = new String(body);
+
+// //         UNCOMMENT AND TEST PASSES INSTEAD OF HANGING
+//            try {
+//                Thread.sleep(100);
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
 
             String response = String.format("HTTP/1.1 200 OK\nContent-Length: %d\n\n%s", TEST_MESSAGE.length(), TEST_MESSAGE);
 

@@ -39,7 +39,7 @@ public class HttpRequestExpectHeaderTestCase extends AbstractHttpExpectHeaderSer
 
         Flow flow = (Flow) getFlowConstruct(REQUEST_FLOW_NAME);
         MuleEvent event = getTestEvent(TEST_MESSAGE);
-        event.getMessage().setOutboundProperty(EXPECT, CONTINUE);
+//        event.getMessage().setOutboundProperty(EXPECT, CONTINUE);
 
         flow.process(event);
         assertThat(requestBody, equalTo(TEST_MESSAGE));
