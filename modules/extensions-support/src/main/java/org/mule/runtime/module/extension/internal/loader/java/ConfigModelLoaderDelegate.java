@@ -9,6 +9,7 @@ package org.mule.runtime.module.extension.internal.loader.java;
 import static java.lang.String.format;
 import static org.mule.runtime.extension.api.annotation.Extension.DEFAULT_CONFIG_DESCRIPTION;
 import static org.mule.runtime.extension.api.annotation.Extension.DEFAULT_CONFIG_NAME;
+
 import org.mule.runtime.api.meta.model.declaration.fluent.ConfigurationDeclarer;
 import org.mule.runtime.api.meta.model.declaration.fluent.ExtensionDeclarer;
 import org.mule.runtime.extension.api.annotation.Configuration;
@@ -48,7 +49,7 @@ final class ConfigModelLoaderDelegate extends AbstractModelLoaderDelegate {
   }
 
   private void declareConfiguration(ExtensionDeclarer declarer, ExtensionElement extensionType, ComponentElement configType) {
-    checkConfigurationIsNotAnOperation(configType.getDeclaringClass());
+    //    checkConfigurationIsNotAnOperation(configType.getDeclaringClass());
     ConfigurationDeclarer configurationDeclarer;
 
     Optional<Configuration> configurationAnnotation = configType.getAnnotation(Configuration.class);

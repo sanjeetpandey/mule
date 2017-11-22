@@ -18,9 +18,7 @@ import static org.mule.runtime.module.extension.internal.loader.utils.ModelLoade
 import static org.mule.runtime.module.extension.internal.util.IntrospectionUtils.getGenerics;
 import static org.mule.runtime.module.extension.internal.util.IntrospectionUtils.getMethodReturnAttributesType;
 import static org.mule.runtime.module.extension.internal.util.IntrospectionUtils.getMethodReturnType;
-import static org.mule.runtime.module.extension.internal.util.IntrospectionUtils.getPagingProviderTypes;
 import static org.mule.runtime.module.extension.internal.util.IntrospectionUtils.isVoid;
-import static org.springframework.core.ResolvableType.forMethodReturnType;
 
 import org.mule.metadata.api.ClassTypeLoader;
 import org.mule.metadata.api.model.MetadataType;
@@ -40,18 +38,16 @@ import org.mule.runtime.module.extension.internal.loader.java.property.Implement
 import org.mule.runtime.module.extension.internal.loader.java.type.ExtensionParameter;
 import org.mule.runtime.module.extension.internal.loader.java.type.MethodElement;
 import org.mule.runtime.module.extension.internal.loader.java.type.OperationContainerElement;
+import org.mule.runtime.module.extension.internal.loader.java.type.Type;
 import org.mule.runtime.module.extension.internal.loader.java.type.WithOperationContainers;
-import org.mule.runtime.module.extension.internal.loader.java.type.runtime.ParameterizableTypeWrapper;
+import org.mule.runtime.module.extension.internal.loader.java.type.ast.GenericInfo;
 import org.mule.runtime.module.extension.internal.loader.utils.ParameterDeclarationContext;
 import org.mule.runtime.module.extension.internal.runtime.execution.ReflectiveOperationExecutorFactory;
 
-import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-
-import org.springframework.core.ResolvableType;
 
 /**
  * Helper class for declaring operations through a {@link DefaultJavaModelLoaderDelegate}
@@ -91,19 +87,19 @@ final class OperationModelLoaderDelegate extends AbstractModelLoaderDelegate {
                          boolean supportsConfig) {
 
     for (MethodElement operationMethod : operations) {
+      OperationContainerElement methodOwner = operationMethod.getEnclosingType();
       Class<?> declaringClass = methodOwnerClass != null ? methodOwnerClass : operationMethod.getDeclaringClass();
       checkOperationIsNotAnExtension(declaringClass);
 
-      final Method method = operationMethod.getMethod();
       final Optional<ExtensionParameter> configParameter = loader.getConfigParameter(operationMethod);
       final Optional<ExtensionParameter> connectionParameter = loader.getConnectionParameter(operationMethod);
 
       if (isScope(operationMethod)) {
-        scopesDelegate.declareScope(extensionDeclarer, ownerDeclarer, methodOwnerClass, operationMethod, method, configParameter,
+        scopesDelegate.declareScope(extensionDeclarer, ownerDeclarer, methodOwnerClass, operationMethod, configParameter,
                                     connectionParameter);
         continue;
       } else if (isRouter(operationMethod)) {
-        routersDelegate.declareRouter(extensionDeclarer, ownerDeclarer, methodOwnerClass, operationMethod, method,
+        routersDelegate.declareRouter(extensionDeclarer, ownerDeclarer, methodOwnerClass, operationMethod,
                                       configParameter,
                                       connectionParameter);
         continue;
@@ -111,8 +107,7 @@ final class OperationModelLoaderDelegate extends AbstractModelLoaderDelegate {
 
       checkDefinition(!loader.isInvalidConfigSupport(supportsConfig, configParameter, connectionParameter),
                       format("Operation '%s' is defined at the extension level but it requires a config. "
-                          + "Remove such parameter or move the operation to the proper config",
-                             method.getName()));
+                          + "Remove such parameter or move the operation to the proper config", "TODO"));
 
       HasOperationDeclarer actualDeclarer = selectDeclarer(extensionDeclarer, (Declarer) ownerDeclarer,
                                                            operationMethod, configParameter, connectionParameter);
@@ -122,15 +117,18 @@ final class OperationModelLoaderDelegate extends AbstractModelLoaderDelegate {
         continue;
       }
 
-      final OperationDeclarer operationDeclarer = actualDeclarer.withOperation(operationMethod.getAlias())
+      final OperationDeclarer operationDeclarer = actualDeclarer.withOperation(operationMethod.getAlias());
+      operationMethod.getMethod().ifPresent(method -> operationDeclarer
           .withModelProperty(new ImplementingMethodModelProperty(method))
           .withModelProperty(new ComponentExecutorModelProperty(new ReflectiveOperationExecutorFactory<>(declaringClass,
-                                                                                                         method)));
+                                                                                                         method))));
+
 
       loader.addExceptionEnricher(operationMethod, operationDeclarer);
 
-      final List<ExtensionParameter> fieldParameters = new ParameterizableTypeWrapper(declaringClass).getParameters();
-      declareParameters(operationDeclarer, supportsConfig, operationMethod, fieldParameters, method);
+
+      final List<ExtensionParameter> fieldParameters = methodOwner.getParameters();
+      declareParameters(operationDeclarer, supportsConfig, operationMethod, fieldParameters);
       operationDeclarers.put(operationMethod, operationDeclarer);
     }
   }
@@ -138,14 +136,13 @@ final class OperationModelLoaderDelegate extends AbstractModelLoaderDelegate {
   private void declareParameters(OperationDeclarer operation,
                                  boolean supportsConfig,
                                  MethodElement operationMethod,
-                                 List<ExtensionParameter> fieldParameters,
-                                 Method method) {
+                                 List<ExtensionParameter> fieldParameters) {
     processComponentConnectivity(operation, operationMethod, operationMethod);
 
     if (isNonBlocking(operationMethod)) {
       processNonBlockingOperation(operation, operationMethod, true, loader.getTypeLoader());
     } else {
-      processBlockingOperation(supportsConfig, operationMethod, method, operation);
+      processBlockingOperation(supportsConfig, operationMethod, operation);
     }
 
     processMimeType(operation, operationMethod);
@@ -158,21 +155,21 @@ final class OperationModelLoaderDelegate extends AbstractModelLoaderDelegate {
     });
   }
 
-  private void processBlockingOperation(boolean supportsConfig, MethodElement operationMethod, Method method,
+  private void processBlockingOperation(boolean supportsConfig, MethodElement operationMethod,
                                         OperationDeclarer operation) {
     operation.blocking(true);
-    operation.withOutputAttributes().ofType(getMethodReturnAttributesType(method, loader.getTypeLoader()));
+    operation.withOutputAttributes().ofType(getMethodReturnAttributesType(operationMethod, loader.getTypeLoader()));
 
-    final MetadataType outputType = getMethodReturnType(method, loader.getTypeLoader());
+    final MetadataType outputType = getMethodReturnType(operationMethod, loader.getTypeLoader());
 
     if (isAutoPaging(operationMethod)) {
       operation.supportsStreaming(true).withOutput().ofType(outputType);
       addPagedOperationModelProperty(operationMethod, operation, supportsConfig);
-      processPagingTx(operation, method);
+      processPagingTx(operation, operationMethod);
     } else {
       operation.withOutput().ofType(outputType);
 
-      handleByteStreaming(method, operation, outputType);
+      handleByteStreaming(operationMethod, operation, outputType);
     }
   }
 
@@ -202,14 +199,14 @@ final class OperationModelLoaderDelegate extends AbstractModelLoaderDelegate {
                     format("Operation '%s' defines more than one %s parameters. Only one is allowed",
                            operationMethod.getAlias(), CompletionCallback.class.getSimpleName()));
 
-    checkDefinition(isVoid(operationMethod.getMethod()), format("Operation '%s' has a parameter of type %s but is not void. "
+    checkDefinition(isVoid(operationMethod), format("Operation '%s' has a parameter of type %s but is not void. "
         + "Non-blocking operations have to be declared as void and the "
         + "return type provided through the callback",
-                                                                operationMethod.getAlias(),
-                                                                CompletionCallback.class.getSimpleName()));
+                                                    operationMethod.getAlias(),
+                                                    CompletionCallback.class.getSimpleName()));
 
     ExtensionParameter callbackParameter = callbackParameters.get(0);
-    java.lang.reflect.Parameter methodParameter = (java.lang.reflect.Parameter) callbackParameter.getDeclaringElement();
+    java.lang.reflect.Parameter methodParameter = (java.lang.reflect.Parameter) callbackParameter.getDeclaringElement().get();
     List<MetadataType> genericTypes = getGenerics(methodParameter.getParameterizedType(), typeLoader);
 
     if (genericTypes.isEmpty()) {
@@ -223,7 +220,7 @@ final class OperationModelLoaderDelegate extends AbstractModelLoaderDelegate {
     operation.blocking(false);
 
     if (allowStreaming) {
-      handleByteStreaming(operationMethod.getMethod(), operation, genericTypes.get(0));
+      handleByteStreaming(operationMethod, operation, genericTypes.get(0));
     } else {
       operation.supportsStreaming(false);
     }
@@ -250,10 +247,13 @@ final class OperationModelLoaderDelegate extends AbstractModelLoaderDelegate {
     operation.requiresConnection(true);
   }
 
-  private void processPagingTx(OperationDeclarer operation, Method method) {
+  private void processPagingTx(OperationDeclarer operation, MethodElement method) {
     checkArgument(method != null, "Can't introspect a null method");
-    ResolvableType connectionType = getPagingProviderTypes(forMethodReturnType(method)).getFirst();
-    operation.transactional(TransactionalConnection.class.isAssignableFrom(connectionType.getRawClass()));
+    Type returnTypeElement = method.getReturnTypeElement();
+    List<GenericInfo> generics = returnTypeElement.getGenerics();
+    //TODO REVIEW
+    GenericInfo connection = generics.get(0);
+    operation.transactional(connection.getConcreteType().isAssignableTo(TransactionalConnection.class));
   }
 
   static void checkDefinition(boolean condition, String message) {

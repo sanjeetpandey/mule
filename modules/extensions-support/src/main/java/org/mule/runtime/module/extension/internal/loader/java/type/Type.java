@@ -6,8 +6,13 @@
  */
 package org.mule.runtime.module.extension.internal.loader.java.type;
 
+import org.mule.runtime.module.extension.internal.loader.java.type.ast.GenericInfo;
+
+import javax.lang.model.element.TypeElement;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -29,4 +34,23 @@ public interface Type extends WithAnnotations, WithName, WithAlias, WithDeclarin
    */
   List<FieldElement> getAnnotatedFields(Class<? extends Annotation>... annotations);
 
+  boolean isAssignableFrom(Class<?> clazz);
+
+  default TypeElement getTypeElement() {
+    return null;
+  }
+
+  boolean isAssignableTo(Class<?> clazz);
+
+  default boolean isPrimitive() {
+    return false;
+  }
+
+  default List<GenericInfo> getGenerics() {
+    return Collections.emptyList();
+  }
+
+  java.lang.reflect.Type getReflectType();
+
+  String getTypeName();
 }

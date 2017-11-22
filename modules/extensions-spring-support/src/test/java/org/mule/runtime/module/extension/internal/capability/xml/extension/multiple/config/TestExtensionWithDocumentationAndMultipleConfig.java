@@ -6,16 +6,26 @@
  */
 package org.mule.runtime.module.extension.internal.capability.xml.extension.multiple.config;
 
+import org.mule.runtime.api.meta.Category;
+import org.mule.runtime.extension.api.annotation.Alias;
 import org.mule.runtime.extension.api.annotation.Configurations;
 import org.mule.runtime.extension.api.annotation.Extension;
 import org.mule.runtime.extension.api.annotation.dsl.xml.Xml;
+import org.mule.runtime.extension.api.annotation.metadata.MetadataScope;
+import org.mule.runtime.extension.api.annotation.param.Parameter;
+import org.mule.runtime.extension.api.metadata.NullMetadataResolver;
 
 /**
  * Test Extension Description
  */
-@Extension(name = "multiple")
+@Extension(name = "multiple", category = Category.PREMIUM)
+@MetadataScope(outputResolver = NullMetadataResolver.class)
+@Alias("some-alias")
 @Configurations({TestDocumentedConfig.class, TestAnotherDocumentedConfig.class})
 @Xml(namespace = "namespaceLocation", prefix = "documentation")
 public class TestExtensionWithDocumentationAndMultipleConfig {
+
+  @Parameter
+  String param;
 
 }

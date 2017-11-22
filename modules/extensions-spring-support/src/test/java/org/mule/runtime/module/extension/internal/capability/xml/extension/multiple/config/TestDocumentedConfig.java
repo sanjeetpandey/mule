@@ -8,6 +8,7 @@ package org.mule.runtime.module.extension.internal.capability.xml.extension.mult
 
 import org.mule.runtime.extension.api.annotation.Configuration;
 import org.mule.runtime.extension.api.annotation.Operations;
+import org.mule.runtime.extension.api.annotation.Sources;
 import org.mule.runtime.extension.api.annotation.connectivity.ConnectionProviders;
 import org.mule.runtime.extension.api.annotation.param.Optional;
 import org.mule.runtime.extension.api.annotation.param.Parameter;
@@ -19,6 +20,7 @@ import org.mule.runtime.extension.api.annotation.param.ParameterGroup;
 @Configuration(name = "config")
 @Operations({TestDocumentedExtensionOperations.class})
 @ConnectionProviders({TestDocumentedProvider.class, TestAnotherDocumentedProvider.class})
+@Sources(ASource.class)
 public class TestDocumentedConfig {
 
   /**
@@ -26,6 +28,9 @@ public class TestDocumentedConfig {
    */
   @Parameter
   private String configParameter;
+
+  @Parameter
+  private int param;
 
   /**
    * Config {@link Parameter} with an {@link Optional} value

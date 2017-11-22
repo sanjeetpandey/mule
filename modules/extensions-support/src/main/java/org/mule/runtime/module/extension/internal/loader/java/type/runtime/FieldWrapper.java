@@ -49,14 +49,6 @@ public class FieldWrapper implements FieldElement {
    * {@inheritDoc}
    */
   @Override
-  public Annotation[] getAnnotations() {
-    return field.getAnnotations();
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
   public <A extends Annotation> Optional<A> getAnnotation(Class<A> annotationClass) {
     return ofNullable(field.getAnnotation(annotationClass));
   }

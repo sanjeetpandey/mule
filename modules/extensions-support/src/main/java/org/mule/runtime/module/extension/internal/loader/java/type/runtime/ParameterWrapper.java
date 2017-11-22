@@ -56,14 +56,6 @@ public final class ParameterWrapper implements ParameterElement {
    * {@inheritDoc}
    */
   @Override
-  public Annotation[] getAnnotations() {
-    return parameter.getAnnotations();
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
   public <A extends Annotation> Optional<A> getAnnotation(Class<A> annotationClass) {
     return Optional.ofNullable(parameter.getAnnotation(annotationClass));
   }

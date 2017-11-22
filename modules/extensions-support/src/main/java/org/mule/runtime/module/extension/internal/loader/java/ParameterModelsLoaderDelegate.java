@@ -19,6 +19,7 @@ import static org.mule.runtime.module.extension.internal.loader.utils.ModelLoade
 import static org.mule.runtime.module.extension.internal.util.IntrospectionUtils.getExpressionSupport;
 import static org.mule.runtime.module.extension.internal.util.IntrospectionUtils.getFieldsWithGetters;
 import static org.mule.runtime.module.extension.internal.util.IntrospectionUtils.isInstantiable;
+
 import org.mule.metadata.api.ClassTypeLoader;
 import org.mule.metadata.api.model.ArrayType;
 import org.mule.metadata.api.model.MetadataType;
@@ -124,7 +125,7 @@ public final class ParameterModelsLoaderDelegate {
       parseConfigOverride(extensionParameter, parameter);
       parseNullSafe(extensionParameter, parameter);
       parseLayout(extensionParameter, parameter);
-      addImplementingTypeModelProperty(extensionParameter, parameter);
+      extensionParameter.getDeclaringElement().ifPresent(element -> addImplementingTypeModelProperty(element, parameter));
       parseParameterDsl(extensionParameter, parameter);
       contributors.forEach(contributor -> contributor.contribute(extensionParameter, parameter, declarationContext));
       declarerList.add(parameter);
@@ -209,8 +210,8 @@ public final class ParameterModelsLoaderDelegate {
                                                                  new ParameterGroupDescriptor(groupName, type,
                                                                                               groupParameter
                                                                                                   .getMetadataType(typeLoader),
-                                                                                              groupParameter
-                                                                                                  .getDeclaringElement())));
+                                                                                              //TODO NULL
+                                                                                              null)));
     }
 
     final List<FieldElement> annotatedParameters = type.getAnnotatedFields(Parameter.class);
@@ -369,8 +370,7 @@ public final class ParameterModelsLoaderDelegate {
     }
   }
 
-  private void addImplementingTypeModelProperty(ExtensionParameter extensionParameter, ParameterDeclarer parameter) {
-    AnnotatedElement element = extensionParameter.getDeclaringElement();
+  private void addImplementingTypeModelProperty(AnnotatedElement element, ParameterDeclarer parameter) {
     parameter.withModelProperty(element instanceof Field
         ? new DeclaringMemberModelProperty(((Field) element))
         : new ImplementingParameterModelProperty((java.lang.reflect.Parameter) element));

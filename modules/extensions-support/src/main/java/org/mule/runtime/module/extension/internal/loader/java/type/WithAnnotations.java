@@ -6,10 +6,11 @@
  */
 package org.mule.runtime.module.extension.internal.loader.java.type;
 
-import static java.util.Arrays.stream;
+import org.mule.runtime.module.extension.internal.loader.java.type.ast.ASTUtils;
 
 import java.lang.annotation.Annotation;
 import java.util.Optional;
+import java.util.function.Function;
 
 /**
  * A generic contract for any kind of component that can be annotated
@@ -17,11 +18,6 @@ import java.util.Optional;
  * @since 4.0
  */
 public interface WithAnnotations {
-
-  /**
-   * @return the array of annotations that the {@link WithAnnotations} component is annotated with
-   */
-  Annotation[] getAnnotations();
 
   /**
    * Retrieves an annotation of the {@link WithAnnotations} component
@@ -32,11 +28,19 @@ public interface WithAnnotations {
    */
   <A extends Annotation> Optional<A> getAnnotation(Class<A> annotationClass);
 
+  default <A extends Annotation> ASTUtils.ValueFetcher<A> getAnnotation2(Class<A> annotationClass) {
+    return null;
+  }
+
+  default <A, R> R getAnnotationValue(Class<A> annotationClass, Function<A, R> function) {
+    return null;
+  }
+
   /**
    * @param annotation The annotation to verify if the, {@link WithAnnotations} is annotated with.
    * @return A {@code boolean} indicating if the {@link WithAnnotations} element is annotated with the given {@code annotation}
    */
   default boolean isAnnotatedWith(Class<? extends Annotation> annotation) {
-    return stream(getAnnotations()).anyMatch(foundAnnotation -> foundAnnotation.annotationType().isAssignableFrom(annotation));
+    return getAnnotation(annotation).isPresent();
   }
 }

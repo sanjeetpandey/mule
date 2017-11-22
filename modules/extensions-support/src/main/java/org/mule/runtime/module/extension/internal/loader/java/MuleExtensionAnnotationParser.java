@@ -17,14 +17,12 @@ import org.mule.runtime.api.meta.model.display.LayoutModel.LayoutModelBuilder;
 import org.mule.runtime.core.api.util.ClassUtils;
 import org.mule.runtime.extension.api.annotation.Alias;
 import org.mule.runtime.extension.api.annotation.Extension;
-import org.mule.runtime.extension.api.annotation.OnException;
 import org.mule.runtime.extension.api.annotation.param.display.Password;
 import org.mule.runtime.extension.api.annotation.param.display.Placement;
 import org.mule.runtime.extension.api.annotation.param.display.Text;
 import org.mule.runtime.extension.api.runtime.exception.ExceptionHandlerFactory;
 import org.mule.runtime.module.extension.internal.loader.java.property.DeclaringMemberModelProperty;
 import org.mule.runtime.module.extension.internal.loader.java.type.WithAnnotations;
-import org.mule.runtime.module.extension.internal.runtime.exception.DefaultExceptionHandlerFactory;
 import org.mule.runtime.module.extension.internal.util.IntrospectionUtils;
 
 import java.lang.annotation.Annotation;
@@ -197,10 +195,10 @@ public final class MuleExtensionAnnotationParser {
   }
 
   static java.util.Optional<ExceptionHandlerFactory> getExceptionEnricherFactory(WithAnnotations element) {
-    final java.util.Optional<OnException> onExceptionAnnotation = element.getAnnotation(OnException.class);
-    if (onExceptionAnnotation.isPresent()) {
-      return of(new DefaultExceptionHandlerFactory(onExceptionAnnotation.get().value()));
-    }
+    //    final java.util.Optional<OnException> onExceptionAnnotation = element.getAnnotation(OnException.class);
+    //    if (onExceptionAnnotation.isPresent()) {
+    //      return of(new DefaultExceptionHandlerFactory(onExceptionAnnotation.get().value()));
+    //    }
     return java.util.Optional.empty();
   }
 }

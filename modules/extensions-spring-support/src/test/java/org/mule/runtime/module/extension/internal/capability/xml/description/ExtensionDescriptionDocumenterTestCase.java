@@ -21,6 +21,7 @@ import static org.mule.runtime.extension.api.ExtensionConstants.EXPIRATION_POLIC
 import static org.mule.runtime.extension.api.annotation.Extension.DEFAULT_CONFIG_DESCRIPTION;
 import static org.mule.runtime.module.extension.internal.resources.ExtensionResourcesGeneratorAnnotationProcessor.EXTENSION_VERSION;
 import static org.mule.test.module.extension.internal.util.ExtensionsTestUtils.compareXML;
+
 import org.mule.runtime.api.meta.DescribedObject;
 import org.mule.runtime.api.meta.model.ExtensionModel;
 import org.mule.runtime.api.meta.model.config.ConfigurationModel;
@@ -39,18 +40,9 @@ import org.mule.runtime.module.extension.internal.capability.xml.extension.multi
 import org.mule.runtime.module.extension.internal.capability.xml.extension.single.config.TestExtensionWithDocumentationAndSingleConfig;
 import org.mule.runtime.module.extension.internal.loader.enricher.ExtensionDescriptionsEnricher;
 import org.mule.runtime.module.extension.internal.loader.java.DefaultJavaModelLoaderDelegate;
+import org.mule.runtime.module.extension.internal.resources.ExtensionResourcesGeneratorAnnotationProcessor;
 import org.mule.runtime.module.extension.internal.resources.documentation.ExtensionDocumentationResourceGenerator;
 import org.mule.tck.size.SmallTest;
-
-import com.google.testing.compile.JavaFileObjects;
-
-import java.io.File;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
 
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.RoundEnvironment;
@@ -61,6 +53,15 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
 import javax.tools.JavaFileObject;
 
+import java.io.File;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
+
+import com.google.testing.compile.JavaFileObjects;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -109,6 +110,19 @@ public class ExtensionDescriptionDocumenterTestCase extends AbstractAnnotationPr
     GeneratedResource resource = generator.generateResource(processor.getExtensionModel())
         .orElseThrow(() -> new RuntimeException("No Documentation Generated"));
     compareXML(expectedXml, new String(resource.getContent()));
+  }
+
+  @Test
+  public void persistDocumentation2() throws Exception {
+    InputStream in = getClass().getResourceAsStream(expectedProductPath);
+    assertThat(in, is(notNullValue()));
+    String expectedXml = IOUtils.toString(in);
+    ExtensionResourcesGeneratorAnnotationProcessor processor = new ExtensionResourcesGeneratorAnnotationProcessor();
+    doCompile(processor);
+    ExtensionDocumentationResourceGenerator generator = new ExtensionDocumentationResourceGenerator();
+    //    GeneratedResource resource = generator.generateResource(processor.getExtensionModel())
+    //        .orElseThrow(() -> new RuntimeException("No Documentation Generated"));
+    //    compareXML(expectedXml, new String(resource.getContent()));
   }
 
   @Test
@@ -207,7 +221,7 @@ public class ExtensionDescriptionDocumenterTestCase extends AbstractAnnotationPr
     assertDescription(provider.getAllParameterModels().get(2), "Second Description");
   }
 
-  private void doCompile(TestProcessor processor) throws Exception {
+  private void doCompile(AbstractProcessor processor) throws Exception {
     assert_().about(javaSources()).that(testSourceFiles()).withCompilerOptions("-Aextension.version=1.0.0-dev")
         .processedWith(processor).compilesWithoutError();
   }

@@ -14,6 +14,7 @@ import static org.apache.commons.lang3.ArrayUtils.EMPTY_CLASS_ARRAY;
 import static org.mule.runtime.api.util.Preconditions.checkArgument;
 import static org.mule.runtime.core.api.util.StringUtils.ifNotBlank;
 import static org.mule.runtime.extension.api.declaration.type.ExtensionsTypeLoaderFactory.getDefault;
+
 import org.mule.metadata.api.ClassTypeLoader;
 import org.mule.runtime.api.meta.model.ExtensionModel;
 import org.mule.runtime.api.meta.model.ExternalLibraryModel;
@@ -22,7 +23,6 @@ import org.mule.runtime.api.meta.model.declaration.fluent.Declarer;
 import org.mule.runtime.api.meta.model.declaration.fluent.DeclaresExternalLibraries;
 import org.mule.runtime.api.meta.model.declaration.fluent.ExtensionDeclarer;
 import org.mule.runtime.api.meta.model.declaration.fluent.HasModelProperties;
-import org.mule.runtime.extension.api.annotation.Extension;
 import org.mule.runtime.extension.api.annotation.ExternalLib;
 import org.mule.runtime.extension.api.annotation.ExternalLibs;
 import org.mule.runtime.extension.api.annotation.Operations;
@@ -44,11 +44,15 @@ import org.mule.runtime.module.extension.internal.loader.java.type.ExtensionType
 import org.mule.runtime.module.extension.internal.loader.java.type.WithAnnotations;
 import org.mule.runtime.module.extension.internal.loader.java.type.WithParameters;
 
-import com.google.common.collect.ImmutableList;
+import javax.annotation.processing.ProcessingEnvironment;
+import javax.annotation.processing.RoundEnvironment;
+import javax.lang.model.element.TypeElement;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
+
+import com.google.common.collect.ImmutableList;
 
 /**
  * Describes an {@link ExtensionModel} by analyzing the annotations in the class provided in the constructor
@@ -97,14 +101,25 @@ public class DefaultJavaModelLoaderDelegate implements ModelLoaderDelegate {
    */
   @Override
   public ExtensionDeclarer declare(ExtensionLoadingContext context) {
-    final ExtensionElement extensionElement = ExtensionTypeFactory.getExtensionType(extensionType);
-    Extension extension = MuleExtensionAnnotationParser.getExtension(extensionType);
+    Optional<RoundEnvironment> round_environment = context.getParameter("ROUND_ENVIRONMENT");
+    Optional<ProcessingEnvironment> processingEnvironment = context.getParameter("PROCESSING_ENVIRONMENT");
+    Optional<TypeElement> typeElement = context.getParameter("EXTENSION_ELEMENT");
+
+    final ExtensionElement extensionElement;
+
+    if (round_environment.isPresent() && processingEnvironment.isPresent() && typeElement.isPresent()) {
+      extensionElement =
+          ExtensionTypeFactory.getExtensionType(typeElement.get(), processingEnvironment.get(), round_environment.get());
+    } else {
+      extensionElement = ExtensionTypeFactory.getExtensionType(extensionType);
+    }
+
     ExtensionDeclarer declarer =
         context.getExtensionDeclarer()
-            .named(extension.name())
+            .named(extensionElement.getName())
             .onVersion(version)
-            .fromVendor(extension.vendor())
-            .withCategory(extension.category())
+            .fromVendor(extensionElement.getVendor())
+            .withCategory(extensionElement.getCategory())
             .withModelProperty(new ImplementingTypeModelProperty(extensionType));
 
     processLicenseRequirements(declarer);

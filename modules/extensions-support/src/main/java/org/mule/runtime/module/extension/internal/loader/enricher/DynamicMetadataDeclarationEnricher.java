@@ -209,7 +209,7 @@ public class DynamicMetadataDeclarationEnricher implements DeclarationEnricher {
       return component.getParameterGroups().stream()
           .map(group -> group.getModelProperty(ParameterGroupModelProperty.class).orElse(null))
           .filter(group -> group != null)
-          .filter(group -> group.getDescriptor().getContainer().getAnnotation(MetadataKeyId.class) != null)
+          .filter(group -> group.getDescriptor().getType().isAnnotatedWith(MetadataKeyId.class))
           .map(group -> new MetadataKeyIdModelProperty(typeLoader.load(group.getDescriptor().getType().getDeclaringClass()),
                                                        group.getDescriptor().getName()))
           .findFirst();

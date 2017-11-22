@@ -95,6 +95,7 @@ import org.mule.runtime.module.extension.internal.loader.java.property.Implement
 import org.mule.runtime.module.extension.internal.loader.java.property.InjectedFieldModelProperty;
 import org.mule.runtime.module.extension.internal.loader.java.property.ParameterGroupModelProperty;
 import org.mule.runtime.module.extension.internal.loader.java.property.RequireNameField;
+import org.mule.runtime.module.extension.internal.loader.java.type.MethodElement;
 
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
@@ -220,6 +221,10 @@ public final class IntrospectionUtils {
    * @throws IllegalArgumentException is method is {@code null}
    */
   public static MetadataType getMethodReturnType(Method method, ClassTypeLoader typeLoader) {
+    return getReturnType(getMethodType(method), typeLoader);
+  }
+
+  public static MetadataType getMethodReturnType(MethodElement method, ClassTypeLoader typeLoader) {
     return getReturnType(getMethodType(method), typeLoader);
   }
 
@@ -350,6 +355,34 @@ public final class IntrospectionUtils {
     return type != null ? typeLoader.load(type) : typeBuilder().voidType().build();
   }
 
+  public static MetadataType getMethodReturnAttributesType(MethodElement method, ClassTypeLoader typeLoader) {
+    ResolvableType outputType = ResolvableType.forType(method.getReturnType());
+    Type type = null;
+
+    if (Result.class.equals(outputType.getRawClass())) {
+      ResolvableType genericType = outputType.getGenerics()[1];
+      if (genericType.getRawClass() != null) {
+        type = genericType.getType();
+      }
+    }
+
+    if (isPagingProvider(outputType)) {
+      ResolvableType itemType = getPagingProviderTypes(outputType).getSecond();
+      if (Result.class.equals(itemType.getRawClass())) {
+        type = null;
+      }
+    }
+
+    if (isCollection(outputType)) {
+      ResolvableType itemType = outputType.getGenerics()[0];
+      if (Result.class.equals(itemType.getRawClass())) {
+        type = null;
+      }
+    }
+
+    return type != null ? typeLoader.load(type) : typeBuilder().voidType().build();
+  }
+
   public static List<MetadataType> getGenerics(Type type, ClassTypeLoader typeLoader) {
     if (type instanceof ParameterizedType) {
       ParameterizedType parameterizedType = (ParameterizedType) type;
@@ -363,6 +396,11 @@ public final class IntrospectionUtils {
   private static ResolvableType getMethodType(Method method) {
     checkArgument(method != null, "Can't introspect a null method");
     return forMethodReturnType(method);
+  }
+
+  private static ResolvableType getMethodType(MethodElement method) {
+    checkArgument(method != null, "Can't introspect a null method");
+    return ResolvableType.forType(method.getReturnTypeElement().getReflectType());
   }
 
   /**
@@ -603,6 +641,11 @@ public final class IntrospectionUtils {
 
   private static boolean isVoid(Class<?> type) {
     return type.equals(void.class) || type.equals(Void.class);
+  }
+
+  public static boolean isVoid(MethodElement methodElement) {
+    org.mule.runtime.module.extension.internal.loader.java.type.Type returnTypeElement = methodElement.getReturnTypeElement();
+    return returnTypeElement.isAssignableFrom(void.class) || returnTypeElement.isAssignableFrom(Void.class);
   }
 
   public static Collection<Method> getApiMethods(Class<?> declaringClass) {

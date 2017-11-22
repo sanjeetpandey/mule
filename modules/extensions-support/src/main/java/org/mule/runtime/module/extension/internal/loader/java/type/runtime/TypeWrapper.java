@@ -35,14 +35,6 @@ public class TypeWrapper implements Type {
    * {@inheritDoc}
    */
   @Override
-  public Annotation[] getAnnotations() {
-    return aClass.getAnnotations();
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
   public String getName() {
     return aClass.getSimpleName();
   }
@@ -77,5 +69,26 @@ public class TypeWrapper implements Type {
   @Override
   public Class<?> getDeclaringClass() {
     return aClass;
+  }
+
+
+  @Override
+  public boolean isAssignableFrom(Class<?> clazz) {
+    return aClass.isAssignableFrom(clazz);
+  }
+
+  @Override
+  public boolean isAssignableTo(Class<?> clazz) {
+    return clazz.isAssignableFrom(aClass);
+  }
+
+  @Override
+  public java.lang.reflect.Type getReflectType() {
+    return getDeclaringClass();
+  }
+
+  @Override
+  public String getTypeName() {
+    return aClass.getTypeName();
   }
 }
