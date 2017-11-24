@@ -106,6 +106,16 @@ public final class MetadataMediator<T extends ComponentModel> {
     return keysDelegate.getMetadataKeys(context);
   }
 
+  public MetadataResult<MetadataKeysContainer> getMetadataKeys(MetadataContext context,
+                                                               ParameterValueResolver metadataKeyResolver) {
+    MetadataResult keyValueResult = getMetadataKeyObjectValue(metadataKeyResolver);
+    if (!keyValueResult.isSuccess()) {
+      return keyValueResult;
+    }
+
+    return keysDelegate.getMetadataKeys(context, keyValueResult.get());
+  }
+
   /**
    * Resolves the {@link ComponentMetadataDescriptor} for the associated {@code context} using the specified
    * {@code key}
@@ -139,10 +149,9 @@ public final class MetadataMediator<T extends ComponentModel> {
       MetadataResult keyValueResult = getMetadataKeyObjectValue(metadataKeyResolver);
       if (!keyValueResult.isSuccess()) {
         return keyValueResult;
-      } else {
-        keyValue = keyValueResult.get();
       }
 
+      keyValue = keyValueResult.get();
       if (keyValue == null && !keyIdObjectResolver.isKeyLess()) {
         return failure(newFailure().withFailureCode(INVALID_METADATA_KEY).withMessage("MetadataKey resolved to null")
             .onComponent());

@@ -259,7 +259,8 @@ public abstract class ExtensionComponent<T extends ComponentModel> extends Abstr
     try {
       return runWithMetadataContext(
                                     context -> withContextClassLoader(getClassLoader(this.extensionModel),
-                                                                      () -> metadataMediator.getMetadataKeys(context)));
+                                                                      () -> metadataMediator.getMetadataKeys(context,
+                                                                                                             getParameterValueResolver())));
     } catch (ConnectionException e) {
       return failure(newFailure(e).onKeys());
     }

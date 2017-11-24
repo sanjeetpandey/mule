@@ -152,6 +152,14 @@
         <metadata:simple-multi-level-key-resolver config-ref="config" continent="AMERICA" country="USA" city="SFO"/>
     </flow>
 
+    <flow name="partialMultiLevelKeyResolver">
+        <metadata:partial-multi-level-key-resolver config-ref="config" continent="AMERICA"/>
+    </flow>
+
+    <flow name="twoLevelPartialMultiLevelKeyResolver">
+        <metadata:partial-multi-level-key-resolver config-ref="config" continent="AMERICA" country="ARGENTINA"/>
+    </flow>
+
     <flow name="incompleteMultiLevelKeyResolver">
         <metadata:simple-multi-level-key-resolver config-ref="config" continent="AMERICA" country="USA"/>
     </flow>
