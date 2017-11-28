@@ -18,7 +18,7 @@
         "format": "java",
         "type": "Object",
         "annotations": {
-          "typeId": "org.mule.runtime.extension.api.soap.MessageDispatcherProvider",
+          "type": "org.mule.runtime.extension.api.soap.MessageDispatcherProvider",
           "classInformation": {
             "classname": "org.mule.runtime.extension.api.soap.MessageDispatcherProvider",
             "hasDefaultConstructor": false,
@@ -52,7 +52,7 @@
           "format": "java",
           "type": "Object",
           "annotations": {
-            "typeId": "org.mule.runtime.module.extension.soap.api.runtime.connection.transport.DefaultHttpMessageDispatcherProvider",
+            "type": "org.mule.runtime.module.extension.soap.api.runtime.connection.transport.DefaultHttpMessageDispatcherProvider",
             "classInformation": {
               "classname": "org.mule.runtime.module.extension.soap.api.runtime.connection.transport.DefaultHttpMessageDispatcherProvider",
               "hasDefaultConstructor": true,
@@ -113,7 +113,19 @@
                 "format": "java",
                 "type": "Object",
                 "annotations": {
-                  "typeId": "org.mule.runtime.extension.api.runtime.ExpirationPolicy",
+                  "type": "org.mule.runtime.extension.api.runtime.ExpirationPolicy",
+                  "classInformation": {
+                    "classname": "java.util.Map",
+                    "hasDefaultConstructor": false,
+                    "isInterface": true,
+                    "isInstantiable": false,
+                    "isAbstract": true,
+                    "isFinal": false,
+                    "implementedInterfaces": [],
+                    "parent": "",
+                    "genericTypes": [],
+                    "isMap": true
+                  },
                   "description": {
                     "value": "Configures the minimum amount of time that a dynamic configuration instance can remain idle before the runtime considers it eligible for expiration. This does not mean that the platform will expire the instance at the exact moment that it becomes eligible. The runtime will actually purge the instances when it sees it fit."
                   },
@@ -175,6 +187,22 @@
                             "HOURS",
                             "DAYS"
                           ]
+                        },
+                        "classInformation": {
+                          "classname": "java.lang.String",
+                          "hasDefaultConstructor": true,
+                          "isInterface": false,
+                          "isInstantiable": true,
+                          "isAbstract": false,
+                          "isFinal": true,
+                          "implementedInterfaces": [
+                            "java.io.Serializable",
+                            "java.lang.Comparable",
+                            "java.lang.CharSequence"
+                          ],
+                          "parent": "",
+                          "genericTypes": [],
+                          "isMap": false
                         },
                         "default": "MINUTES"
                       }
@@ -247,7 +275,7 @@
               "format": "java",
               "type": "Object",
               "annotations": {
-                "typeId": "org.mule.runtime.extension.api.soap.SoapOutputPayload",
+                "type": "org.mule.runtime.extension.api.soap.SoapOutputPayload",
                 "classInformation": {
                   "classname": "org.mule.runtime.extension.api.soap.SoapOutputPayload",
                   "hasDefaultConstructor": false,
@@ -383,7 +411,7 @@
               "format": "java",
               "type": "Object",
               "annotations": {
-                "typeId": "org.mule.runtime.extension.api.soap.SoapAttributes",
+                "type": "org.mule.runtime.extension.api.soap.SoapAttributes",
                 "classInformation": {
                   "classname": "org.mule.runtime.extension.api.soap.SoapAttributes",
                   "hasDefaultConstructor": false,
@@ -469,7 +497,25 @@
                 {
                   "type": {
                     "format": "java",
-                    "type": "String"
+                    "type": "String",
+                    "annotations": {
+                      "classInformation": {
+                        "classname": "java.lang.String",
+                        "hasDefaultConstructor": true,
+                        "isInterface": false,
+                        "isInstantiable": true,
+                        "isAbstract": false,
+                        "isFinal": true,
+                        "implementedInterfaces": [
+                          "java.io.Serializable",
+                          "java.lang.Comparable",
+                          "java.lang.CharSequence"
+                        ],
+                        "parent": "",
+                        "genericTypes": [],
+                        "isMap": false
+                      }
+                    }
                   },
                   "hasDynamicType": false,
                   "required": true,
@@ -499,7 +545,25 @@
                 {
                   "type": {
                     "format": "java",
-                    "type": "String"
+                    "type": "String",
+                    "annotations": {
+                      "classInformation": {
+                        "classname": "java.lang.String",
+                        "hasDefaultConstructor": true,
+                        "isInterface": false,
+                        "isInstantiable": true,
+                        "isAbstract": false,
+                        "isFinal": true,
+                        "implementedInterfaces": [
+                          "java.io.Serializable",
+                          "java.lang.Comparable",
+                          "java.lang.CharSequence"
+                        ],
+                        "parent": "",
+                        "genericTypes": [],
+                        "isMap": false
+                      }
+                    }
                   },
                   "hasDynamicType": false,
                   "required": true,
@@ -636,17 +700,7 @@
                 {
                   "type": {
                     "format": "java",
-                    "type": "Object",
-                    "annotations": {
-                      "typeId": "java.util.Map"
-                    },
-                    "open": {
-                      "type": "Binary",
-                      "annotations": {
-                        "typeId": "java.io.InputStream"
-                      }
-                    },
-                    "fields": []
+                    "type": "@ref:attachments"
                   },
                   "hasDynamicType": true,
                   "required": false,
@@ -690,14 +744,7 @@
                 {
                   "type": {
                     "format": "java",
-                    "type": "Object",
-                    "annotations": {
-                      "typeId": "java.util.Map"
-                    },
-                    "open": {
-                      "type": "String"
-                    },
-                    "fields": []
+                    "type": "@ref:transport-headers"
                   },
                   "hasDynamicType": false,
                   "required": false,
@@ -821,13 +868,37 @@
                     "format": "java",
                     "type": "Union",
                     "annotations": {
-                      "typeId": "ReconnectionStrategy"
+                      "type": "ReconnectionStrategy",
+                      "classInformation": {
+                        "classname": "java.util.Map",
+                        "hasDefaultConstructor": false,
+                        "isInterface": true,
+                        "isInstantiable": false,
+                        "isAbstract": true,
+                        "isFinal": false,
+                        "implementedInterfaces": [],
+                        "parent": "",
+                        "genericTypes": [],
+                        "isMap": true
+                      }
                     },
                     "of": [
                       {
                         "type": "Object",
                         "annotations": {
-                          "typeId": "reconnect"
+                          "type": "reconnect",
+                          "classInformation": {
+                            "classname": "java.util.Map",
+                            "hasDefaultConstructor": false,
+                            "isInterface": true,
+                            "isInstantiable": false,
+                            "isAbstract": true,
+                            "isFinal": false,
+                            "implementedInterfaces": [],
+                            "parent": "",
+                            "genericTypes": [],
+                            "isMap": true
+                          }
                         },
                         "fields": [
                           {
@@ -869,6 +940,18 @@
                               "type": "Number",
                               "annotations": {
                                 "int": {},
+                                "classInformation": {
+                                  "classname": "int",
+                                  "hasDefaultConstructor": false,
+                                  "isInterface": false,
+                                  "isInstantiable": false,
+                                  "isAbstract": true,
+                                  "isFinal": true,
+                                  "implementedInterfaces": [],
+                                  "parent": "",
+                                  "genericTypes": [],
+                                  "isMap": false
+                                },
                                 "default": "2"
                               }
                             },
@@ -883,7 +966,19 @@
                       {
                         "type": "Object",
                         "annotations": {
-                          "typeId": "reconnect-forever"
+                          "type": "reconnect-forever",
+                          "classInformation": {
+                            "classname": "java.util.Map",
+                            "hasDefaultConstructor": false,
+                            "isInterface": true,
+                            "isInstantiable": false,
+                            "isAbstract": true,
+                            "isFinal": false,
+                            "implementedInterfaces": [],
+                            "parent": "",
+                            "genericTypes": [],
+                            "isMap": true
+                          }
                         },
                         "fields": [
                           {
@@ -976,7 +1071,7 @@
                 "format": "java",
                 "type": "Object",
                 "annotations": {
-                  "typeId": "org.mule.runtime.extension.api.soap.WebServiceTypeKey",
+                  "type": "org.mule.runtime.extension.api.soap.WebServiceTypeKey",
                   "classInformation": {
                     "classname": "org.mule.runtime.extension.api.soap.WebServiceTypeKey",
                     "hasDefaultConstructor": true,
@@ -1138,7 +1233,7 @@
                     "format": "java",
                     "type": "Object",
                     "annotations": {
-                      "typeId": "org.mule.runtime.extension.api.soap.MessageDispatcherProvider",
+                      "type": "org.mule.runtime.extension.api.soap.MessageDispatcherProvider",
                       "classInformation": {
                         "classname": "org.mule.runtime.extension.api.soap.MessageDispatcherProvider",
                         "hasDefaultConstructor": false,
@@ -1204,7 +1299,19 @@
                     "format": "java",
                     "type": "Object",
                     "annotations": {
-                      "typeId": "Reconnection"
+                      "type": "Reconnection",
+                      "classInformation": {
+                        "classname": "java.util.Map",
+                        "hasDefaultConstructor": false,
+                        "isInterface": true,
+                        "isInstantiable": false,
+                        "isAbstract": true,
+                        "isFinal": false,
+                        "implementedInterfaces": [],
+                        "parent": "",
+                        "genericTypes": [],
+                        "isMap": true
+                      }
                     },
                     "fields": [
                       {
@@ -1214,6 +1321,18 @@
                         "model": {
                           "type": "Boolean",
                           "annotations": {
+                            "classInformation": {
+                              "classname": "boolean",
+                              "hasDefaultConstructor": false,
+                              "isInterface": false,
+                              "isInstantiable": false,
+                              "isAbstract": true,
+                              "isFinal": true,
+                              "implementedInterfaces": [],
+                              "parent": "",
+                              "genericTypes": [],
+                              "isMap": false
+                            },
                             "default": "false"
                           }
                         },
@@ -1230,13 +1349,37 @@
                         "model": {
                           "type": "Union",
                           "annotations": {
-                            "typeId": "ReconnectionStrategy"
+                            "type": "ReconnectionStrategy",
+                            "classInformation": {
+                              "classname": "java.util.Map",
+                              "hasDefaultConstructor": false,
+                              "isInterface": true,
+                              "isInstantiable": false,
+                              "isAbstract": true,
+                              "isFinal": false,
+                              "implementedInterfaces": [],
+                              "parent": "",
+                              "genericTypes": [],
+                              "isMap": true
+                            }
                           },
                           "of": [
                             {
                               "type": "Object",
                               "annotations": {
-                                "typeId": "reconnect"
+                                "type": "reconnect",
+                                "classInformation": {
+                                  "classname": "java.util.Map",
+                                  "hasDefaultConstructor": false,
+                                  "isInterface": true,
+                                  "isInstantiable": false,
+                                  "isAbstract": true,
+                                  "isFinal": false,
+                                  "implementedInterfaces": [],
+                                  "parent": "",
+                                  "genericTypes": [],
+                                  "isMap": true
+                                }
                               },
                               "fields": [
                                 {
@@ -1278,6 +1421,18 @@
                                     "type": "Number",
                                     "annotations": {
                                       "int": {},
+                                      "classInformation": {
+                                        "classname": "int",
+                                        "hasDefaultConstructor": false,
+                                        "isInterface": false,
+                                        "isInstantiable": false,
+                                        "isAbstract": true,
+                                        "isFinal": true,
+                                        "implementedInterfaces": [],
+                                        "parent": "",
+                                        "genericTypes": [],
+                                        "isMap": false
+                                      },
                                       "default": "2"
                                     }
                                   },
@@ -1292,7 +1447,19 @@
                             {
                               "type": "Object",
                               "annotations": {
-                                "typeId": "reconnect-forever"
+                                "type": "reconnect-forever",
+                                "classInformation": {
+                                  "classname": "java.util.Map",
+                                  "hasDefaultConstructor": false,
+                                  "isInterface": true,
+                                  "isInstantiable": false,
+                                  "isAbstract": true,
+                                  "isFinal": false,
+                                  "implementedInterfaces": [],
+                                  "parent": "",
+                                  "genericTypes": [],
+                                  "isMap": true
+                                }
                               },
                               "fields": [
                                 {
@@ -1376,9 +1543,21 @@
                     "format": "java",
                     "type": "Object",
                     "annotations": {
-                      "typeId": "org.mule.runtime.api.config.PoolingProfile",
+                      "type": "org.mule.runtime.api.config.PoolingProfile",
                       "description": {
                         "value": "A pooling profile is used to configure the pooling behaviour of Mule components. Each component can have its own pooling profile."
+                      },
+                      "classInformation": {
+                        "classname": "org.mule.runtime.api.config.PoolingProfile",
+                        "hasDefaultConstructor": true,
+                        "isInterface": false,
+                        "isInstantiable": true,
+                        "isAbstract": false,
+                        "isFinal": false,
+                        "implementedInterfaces": [],
+                        "parent": "",
+                        "genericTypes": [],
+                        "isMap": false
                       }
                     },
                     "fields": [
@@ -1390,6 +1569,18 @@
                           "type": "Number",
                           "annotations": {
                             "int": {},
+                            "classInformation": {
+                              "classname": "int",
+                              "hasDefaultConstructor": false,
+                              "isInterface": false,
+                              "isInstantiable": false,
+                              "isAbstract": true,
+                              "isFinal": true,
+                              "implementedInterfaces": [],
+                              "parent": "",
+                              "genericTypes": [],
+                              "isMap": false
+                            },
                             "default": "5"
                           }
                         },
@@ -1407,6 +1598,18 @@
                           "type": "Number",
                           "annotations": {
                             "int": {},
+                            "classInformation": {
+                              "classname": "int",
+                              "hasDefaultConstructor": false,
+                              "isInterface": false,
+                              "isInstantiable": false,
+                              "isAbstract": true,
+                              "isFinal": true,
+                              "implementedInterfaces": [],
+                              "parent": "",
+                              "genericTypes": [],
+                              "isMap": false
+                            },
                             "default": "5"
                           }
                         },
@@ -1455,6 +1658,18 @@
                           "type": "Number",
                           "annotations": {
                             "int": {},
+                            "classInformation": {
+                              "classname": "int",
+                              "hasDefaultConstructor": false,
+                              "isInterface": false,
+                              "isInstantiable": false,
+                              "isAbstract": true,
+                              "isFinal": true,
+                              "implementedInterfaces": [],
+                              "parent": "",
+                              "genericTypes": [],
+                              "isMap": false
+                            },
                             "default": "1800000"
                           }
                         },
@@ -1472,6 +1687,18 @@
                           "type": "Number",
                           "annotations": {
                             "int": {},
+                            "classInformation": {
+                              "classname": "int",
+                              "hasDefaultConstructor": false,
+                              "isInterface": false,
+                              "isInstantiable": false,
+                              "isAbstract": true,
+                              "isFinal": true,
+                              "implementedInterfaces": [],
+                              "parent": "",
+                              "genericTypes": [],
+                              "isMap": false
+                            },
                             "default": "-1"
                           }
                         },
@@ -1495,6 +1722,22 @@
                                 "WHEN_EXHAUSTED_WAIT",
                                 "WHEN_EXHAUSTED_FAIL"
                               ]
+                            },
+                            "classInformation": {
+                              "classname": "java.lang.String",
+                              "hasDefaultConstructor": true,
+                              "isInterface": false,
+                              "isInstantiable": true,
+                              "isAbstract": false,
+                              "isFinal": true,
+                              "implementedInterfaces": [
+                                "java.io.Serializable",
+                                "java.lang.Comparable",
+                                "java.lang.CharSequence"
+                              ],
+                              "parent": "",
+                              "genericTypes": [],
+                              "isMap": false
                             },
                             "default": "WHEN_EXHAUSTED_GROW"
                           }
@@ -1520,6 +1763,22 @@
                                 "INITIALISE_ALL"
                               ]
                             },
+                            "classInformation": {
+                              "classname": "java.lang.String",
+                              "hasDefaultConstructor": true,
+                              "isInterface": false,
+                              "isInstantiable": true,
+                              "isAbstract": false,
+                              "isFinal": true,
+                              "implementedInterfaces": [
+                                "java.io.Serializable",
+                                "java.lang.Comparable",
+                                "java.lang.CharSequence"
+                              ],
+                              "parent": "",
+                              "genericTypes": [],
+                              "isMap": false
+                            },
                             "default": "INITIALISE_ONE"
                           }
                         },
@@ -1536,6 +1795,18 @@
                         "model": {
                           "type": "Boolean",
                           "annotations": {
+                            "classInformation": {
+                              "classname": "boolean",
+                              "hasDefaultConstructor": false,
+                              "isInterface": false,
+                              "isInstantiable": false,
+                              "isAbstract": true,
+                              "isFinal": true,
+                              "implementedInterfaces": [],
+                              "parent": "",
+                              "genericTypes": [],
+                              "isMap": false
+                            },
                             "default": "false"
                           }
                         },
@@ -1665,7 +1936,33 @@
       "format": "java",
       "type": "Object",
       "annotations": {
-        "typeId": "org.mule.test.ram.DefaultPortalGunDispatcherProvider",
+        "classInformation": {
+          "classname": "java.util.Map",
+          "hasDefaultConstructor": false,
+          "isInterface": true,
+          "isInstantiable": false,
+          "isAbstract": true,
+          "isFinal": false,
+          "implementedInterfaces": [],
+          "parent": "",
+          "genericTypes": [],
+          "isMap": true
+        },
+        "type": "attachments"
+      },
+      "open": {
+        "type": "Binary",
+        "annotations": {
+          "type": "java.io.InputStream"
+        }
+      },
+      "fields": []
+    },
+    {
+      "format": "java",
+      "type": "Object",
+      "annotations": {
+        "type": "org.mule.test.ram.DefaultPortalGunDispatcherProvider",
         "classInformation": {
           "classname": "org.mule.test.ram.DefaultPortalGunDispatcherProvider",
           "hasDefaultConstructor": true,
@@ -1703,7 +2000,7 @@
       "format": "java",
       "type": "Object",
       "annotations": {
-        "typeId": "org.mule.test.ram.MiniverseDispatcherProvider",
+        "type": "org.mule.test.ram.MiniverseDispatcherProvider",
         "classInformation": {
           "classname": "org.mule.test.ram.MiniverseDispatcherProvider",
           "hasDefaultConstructor": true,
@@ -1719,6 +2016,29 @@
         "typeAlias": {
           "value": "MiniverseDispatcherProvider"
         }
+      },
+      "fields": []
+    },
+    {
+      "format": "java",
+      "type": "Object",
+      "annotations": {
+        "type": "transport-headers",
+        "classInformation": {
+          "classname": "java.util.Map",
+          "hasDefaultConstructor": false,
+          "isInterface": true,
+          "isInstantiable": false,
+          "isAbstract": true,
+          "isFinal": false,
+          "implementedInterfaces": [],
+          "parent": "",
+          "genericTypes": [],
+          "isMap": true
+        }
+      },
+      "open": {
+        "type": "String"
       },
       "fields": []
     }

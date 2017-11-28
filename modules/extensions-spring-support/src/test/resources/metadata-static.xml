@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns:metadata="http://www.mulesoft.org/schema/mule/metadata"
+      xmlns="http://www.mulesoft.org/schema/mule/core"
+      xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+               http://www.mulesoft.org/schema/mule/metadata http://www.mulesoft.org/schema/mule/metadata/current/mule-metadata.xsd">
+
+
+    <metadata:config name="asd"></metadata:config>
+
+    <flow name="input">
+        <metadata:xml-input xml="#[payload]"/>
+    </flow>
+
+    <flow name="custom-input">
+        <metadata:custom-type-input type="#[payload]"/>
+    </flow>
+
+    <flow name="custom-output">
+        <metadata:custom-type-output/>
+    </flow>
+
+    <flow name="output">
+        <metadata:xml-output/>
+    </flow>
+
+</mule>

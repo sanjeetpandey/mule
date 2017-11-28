@@ -87,7 +87,19 @@
                 "format": "java",
                 "type": "Object",
                 "annotations": {
-                  "typeId": "org.mule.runtime.extension.api.runtime.ExpirationPolicy",
+                  "type": "org.mule.runtime.extension.api.runtime.ExpirationPolicy",
+                  "classInformation": {
+                    "classname": "java.util.Map",
+                    "hasDefaultConstructor": false,
+                    "isInterface": true,
+                    "isInstantiable": false,
+                    "isAbstract": true,
+                    "isFinal": false,
+                    "implementedInterfaces": [],
+                    "parent": "",
+                    "genericTypes": [],
+                    "isMap": true
+                  },
                   "description": {
                     "value": "Configures the minimum amount of time that a dynamic configuration instance can remain idle before the runtime considers it eligible for expiration. This does not mean that the platform will expire the instance at the exact moment that it becomes eligible. The runtime will actually purge the instances when it sees it fit."
                   },
@@ -149,6 +161,22 @@
                             "HOURS",
                             "DAYS"
                           ]
+                        },
+                        "classInformation": {
+                          "classname": "java.lang.String",
+                          "hasDefaultConstructor": true,
+                          "isInterface": false,
+                          "isInstantiable": true,
+                          "isAbstract": false,
+                          "isFinal": true,
+                          "implementedInterfaces": [
+                            "java.io.Serializable",
+                            "java.lang.Comparable",
+                            "java.lang.CharSequence"
+                          ],
+                          "parent": "",
+                          "genericTypes": [],
+                          "isMap": false
                         },
                         "default": "MINUTES"
                       }
@@ -252,7 +280,7 @@
       "format": "java",
       "type": "Object",
       "annotations": {
-        "typeId": "org.mule.test.substitutiongroup.extension.MuleSGPojo",
+        "type": "org.mule.test.substitutiongroup.extension.MuleSGPojo",
         "classInformation": {
           "classname": "org.mule.test.substitutiongroup.extension.MuleSGPojo",
           "hasDefaultConstructor": true,
@@ -285,7 +313,19 @@
           "model": {
             "type": "Boolean",
             "annotations": {
-              "typeId": "boolean"
+              "type": "boolean",
+              "classInformation": {
+                "classname": "boolean",
+                "hasDefaultConstructor": false,
+                "isInterface": false,
+                "isInstantiable": false,
+                "isAbstract": true,
+                "isFinal": true,
+                "implementedInterfaces": [],
+                "parent": "",
+                "genericTypes": [],
+                "isMap": false
+              }
             }
           },
           "annotations": {
@@ -301,7 +341,7 @@
       "format": "java",
       "type": "Object",
       "annotations": {
-        "typeId": "org.mule.test.substitutiongroup.extension.SomeExportedPojo",
+        "type": "org.mule.test.substitutiongroup.extension.SomeExportedPojo",
         "classInformation": {
           "classname": "org.mule.test.substitutiongroup.extension.SomeExportedPojo",
           "hasDefaultConstructor": true,
@@ -338,7 +378,19 @@
           "model": {
             "type": "Boolean",
             "annotations": {
-              "typeId": "boolean"
+              "type": "boolean",
+              "classInformation": {
+                "classname": "boolean",
+                "hasDefaultConstructor": false,
+                "isInterface": false,
+                "isInstantiable": false,
+                "isAbstract": true,
+                "isFinal": true,
+                "implementedInterfaces": [],
+                "parent": "",
+                "genericTypes": [],
+                "isMap": false
+              }
             }
           },
           "annotations": {
@@ -354,7 +406,7 @@
       "format": "java",
       "type": "Object",
       "annotations": {
-        "typeId": "org.mule.test.substitutiongroup.extension.SomePojo",
+        "type": "org.mule.test.substitutiongroup.extension.SomePojo",
         "classInformation": {
           "classname": "org.mule.test.substitutiongroup.extension.SomePojo",
           "hasDefaultConstructor": true,
@@ -391,7 +443,19 @@
           "model": {
             "type": "Boolean",
             "annotations": {
-              "typeId": "boolean"
+              "type": "boolean",
+              "classInformation": {
+                "classname": "boolean",
+                "hasDefaultConstructor": false,
+                "isInterface": false,
+                "isInstantiable": false,
+                "isAbstract": true,
+                "isFinal": true,
+                "implementedInterfaces": [],
+                "parent": "",
+                "genericTypes": [],
+                "isMap": false
+              }
             }
           },
           "annotations": {

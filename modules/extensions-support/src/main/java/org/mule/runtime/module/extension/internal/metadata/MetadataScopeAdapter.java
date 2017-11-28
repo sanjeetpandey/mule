@@ -19,6 +19,9 @@ import org.mule.runtime.api.meta.model.declaration.fluent.ComponentDeclaration;
 import org.mule.runtime.api.meta.model.declaration.fluent.NamedDeclaration;
 import org.mule.runtime.api.meta.model.declaration.fluent.OperationDeclaration;
 import org.mule.runtime.api.meta.model.declaration.fluent.ParameterGroupDeclaration;
+import org.mule.runtime.api.meta.model.declaration.fluent.SourceDeclaration;
+import org.mule.runtime.api.meta.model.declaration.fluent.TypedDeclaration;
+import org.mule.runtime.api.meta.model.declaration.fluent.WithOutputDeclaration;
 import org.mule.runtime.api.metadata.resolving.AttributesTypeResolver;
 import org.mule.runtime.api.metadata.resolving.InputTypeResolver;
 import org.mule.runtime.api.metadata.resolving.OutputTypeResolver;
@@ -29,8 +32,10 @@ import org.mule.runtime.extension.api.annotation.metadata.MetadataScope;
 import org.mule.runtime.extension.api.annotation.metadata.OutputResolver;
 import org.mule.runtime.extension.api.annotation.metadata.TypeResolver;
 import org.mule.runtime.extension.api.declaration.type.DefaultExtensionsTypeLoaderFactory;
+import org.mule.runtime.extension.api.declaration.type.annotation.CustomDefinedStaticTypeAnnotation;
 import org.mule.runtime.extension.api.exception.IllegalModelDefinitionException;
 import org.mule.runtime.extension.api.metadata.NullMetadataResolver;
+import org.mule.runtime.module.extension.internal.loader.enricher.fixed.CustomStaticTypeDeclarationEnricher;
 import org.mule.runtime.module.extension.internal.loader.java.property.ParameterGroupModelProperty;
 
 import java.lang.reflect.Method;
@@ -62,13 +67,12 @@ public final class MetadataScopeAdapter {
     Optional<Pair<MetadataKeyId, MetadataType>> keyId = locateMetadataKeyId(declaration);
 
     inputResolvers = declaration.getAllParameters().stream()
-        .filter(p -> getAnnotatedElement(p).map(e -> e.isAnnotationPresent(TypeResolver.class)).orElse(false))
-        .collect(toMap(NamedDeclaration::getName,
-                       p -> ResolverSupplier.of(getAnnotatedElement(p).get().getAnnotation(TypeResolver.class)
-                           .value())));
+       .filter(p -> getAnnotatedElement(p).map(e -> e.isAnnotationPresent(TypeResolver.class)).orElse(false))
+       .filter(p -> !hasCustomStaticType(p))
+       .collect(toMap(p -> p.getName(), p -> ResolverSupplier.of(getAnnotatedElement(p).get().getAnnotation(TypeResolver.class).value())));
 
     if (outputResolverDeclaration != null || !inputResolvers.isEmpty()) {
-      if (outputResolverDeclaration != null) {
+      if (outputResolverDeclaration != null && !hasCustomStaticType(declaration.getOutput())) {
         outputResolver = ResolverSupplier.of(outputResolverDeclaration.output());
         attributesResolver = ResolverSupplier.of(outputResolverDeclaration.attributes());
       }
@@ -79,20 +83,24 @@ public final class MetadataScopeAdapter {
                                        () -> getCategoryName(outputResolver, attributesResolver, inputResolvers));
       }
     } else {
-      initializeFromClass(extensionType, operation.getDeclaringClass());
+      initializeFromClass(extensionType, operation.getDeclaringClass(), declaration);
     }
   }
 
-  public MetadataScopeAdapter(Class<?> extensionType, Class<?> source) {
-    initializeFromClass(extensionType, source);
+  private boolean hasCustomStaticType(TypedDeclaration declaration) {
+    return declaration.getType().getAnnotation(CustomDefinedStaticTypeAnnotation.class).isPresent();
   }
 
-  private void initializeFromClass(Class<?> extensionType, Class<?> source) {
+  public MetadataScopeAdapter(Class<?> extensionType, Class<?> source, SourceDeclaration sourceDeclaration) {
+    initializeFromClass(extensionType, source, sourceDeclaration);
+  }
+
+  private void initializeFromClass(Class<?> extensionType, Class<?> source, WithOutputDeclaration declaration) {
     // TODO MULE-10891: Add support for Source Callback parameters
     MetadataScope scope = getAnnotation(source, MetadataScope.class);
     scope = scope != null ? scope : getAnnotation(extensionType, MetadataScope.class);
 
-    if (scope != null) {
+    if (scope != null && !hasCustomStaticType(declaration.getOutput())) {
       this.keysResolver = ResolverSupplier.of(scope.keysResolver());
       this.outputResolver = ResolverSupplier.of(scope.outputResolver());
       this.attributesResolver = ResolverSupplier.of(scope.attributesResolver());

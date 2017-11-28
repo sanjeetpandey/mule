@@ -29,7 +29,7 @@ import org.mule.test.metadata.extension.resolver.TestMetadataResolverUtils;
 
 @Extension(name = "Metadata")
 @Operations({MetadataOperations.class, MetadataFailureOperations.class, MetadataInheritedExtensionResolversOperations.class,
-    MetadataInheritedOperationResolversOperations.class})
+    MetadataInheritedOperationResolversOperations.class, CustomStaticMetadataOperations.class})
 @ConnectionProviders(MetadataConnectionProvider.class)
 @Sources({MetadataSource.class, MetadataSourceWithMultilevel.class})
 @SubTypeMapping(baseType = Animal.class, subTypes = Bear.class)
