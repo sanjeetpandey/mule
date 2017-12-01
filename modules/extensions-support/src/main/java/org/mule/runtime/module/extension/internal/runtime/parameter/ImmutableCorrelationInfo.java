@@ -8,16 +8,13 @@ package org.mule.runtime.module.extension.internal.runtime.parameter;
 
 import org.mule.runtime.extension.api.runtime.parameter.CorrelationInfo;
 
-import java.util.Optional;
-
 public class ImmutableCorrelationInfo implements CorrelationInfo {
 
   private final String eventId;
   private final boolean outboundCorrelationEnabled;
-  private final Optional<String> correlationId;
+  private final String correlationId;
 
-  public ImmutableCorrelationInfo(String eventId, boolean outboundCorrelationEnabled,
-                                  Optional<String> correlationId) {
+  public ImmutableCorrelationInfo(String eventId, boolean outboundCorrelationEnabled, String correlationId) {
     this.eventId = eventId;
     this.outboundCorrelationEnabled = outboundCorrelationEnabled;
     this.correlationId = correlationId;
@@ -34,7 +31,7 @@ public class ImmutableCorrelationInfo implements CorrelationInfo {
   }
 
   @Override
-  public Optional<String> getCorrelationId() {
+  public String getCorrelationId() {
     return correlationId;
   }
 }

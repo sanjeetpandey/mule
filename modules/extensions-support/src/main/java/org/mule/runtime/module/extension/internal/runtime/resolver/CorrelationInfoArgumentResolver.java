@@ -6,7 +6,6 @@
  */
 package org.mule.runtime.module.extension.internal.runtime.resolver;
 
-import static java.util.Optional.ofNullable;
 import org.mule.runtime.core.api.event.CoreEvent;
 import org.mule.runtime.extension.api.runtime.operation.ExecutionContext;
 import org.mule.runtime.extension.api.runtime.parameter.CorrelationInfo;
@@ -18,6 +17,6 @@ public class CorrelationInfoArgumentResolver implements ArgumentResolver<Correla
   @Override
   public CorrelationInfo resolve(ExecutionContext executionContext) {
     CoreEvent event = ((ExecutionContextAdapter) executionContext).getEvent();
-    return new ImmutableCorrelationInfo(event.getContext().getId(), true, ofNullable(event.getCorrelationId()));
+    return new ImmutableCorrelationInfo(event.getContext().getId(), true, event.getCorrelationId());
   }
 }
