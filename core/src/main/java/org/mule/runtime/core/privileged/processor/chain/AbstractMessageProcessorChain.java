@@ -136,7 +136,7 @@ abstract class AbstractMessageProcessorChain extends AbstractExecutableComponent
                   .error(resolveMessagingException(processor).apply((MessagingException) throwable)));
             } else if (throwable instanceof RejectedExecutionException) {
               getCurrentEvent().getContext()
-                  .error(resolveException((Component) processor, getCurrentEvent(), new FlowOverloadException(throwable)));
+                  .error(resolveException((Component) processor, getCurrentEvent(), throwable));
             } else {
               ((BaseEventContext) event.getContext()).error(resolveException((Component) processor, event, throwable));
             }
@@ -222,7 +222,7 @@ abstract class AbstractMessageProcessorChain extends AbstractExecutableComponent
         if (throwable instanceof MessagingException) {
           return resolveMessagingException(processor).apply((MessagingException) throwable);
         } else if (!(throwable instanceof RejectedExecutionException)) {
-          return resolveException((Component) processor, (CoreEvent) event, throwable);
+          return resolveException((Component) processor, (CoreEvent) event, new FlowOverloadException(throwable));
         } else {
           return throwable;
         }
